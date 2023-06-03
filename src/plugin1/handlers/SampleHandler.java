@@ -50,7 +50,7 @@ public class SampleHandler extends AbstractHandler {
 
 	private static CSVWriter writer;
 	private static CSVReader reader;
-	private final static File input = new File("./AAA Plugin/target.csv");
+	private final static File input = new File("./data/target/target.csv");
 	private final static String outputBase = "./AAA Plugin/tag-sheet/";
 
 	@Override
@@ -180,6 +180,11 @@ public class SampleHandler extends AbstractHandler {
 						visited.add(getSpace(level) + "MOCK " + binding.getDeclaringClass().getQualifiedName() + "." + mi.getName().toString() + getParameters(binding));
 						continue;
 					}
+
+					if (isMockito(mi)) {
+						visited.add(getSpace(level) + "MOCK " + binding.getDeclaringClass().getQualifiedName() + "." + mi.getName().toString() + getParameters(binding));
+						continue;
+					}
 					
 					ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
 					
@@ -267,6 +272,14 @@ public class SampleHandler extends AbstractHandler {
 
 	private static boolean isEasyMock(MethodInvocation mi) {
 		if (mi.resolveMethodBinding().getDeclaringClass().getQualifiedName().startsWith("org.easymock")) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	private static boolean isMockito(MethodInvocation mi) {
+		if (mi.resolveMethodBinding().getDeclaringClass().getQualifiedName().startsWith("org.mockito")) {
 			return true;
 		}
 		
