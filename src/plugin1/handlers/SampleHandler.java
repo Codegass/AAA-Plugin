@@ -50,8 +50,8 @@ public class SampleHandler extends AbstractHandler {
 
 	private static CSVWriter writer;
 	private static CSVReader reader;
-	private final static File input = new File("./data/target/target.csv");
-	private final static String outputBase = "./AAA Plugin/tag-sheet/";
+	private final static File input = new File("/Users/chenhao/Documents/Research/AAA Plugin/target.csv");
+	private final static String outputBase = "/Users/chenhao/Documents/Research/AAA Plugin/tag-sheet/";
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -133,13 +133,13 @@ public class SampleHandler extends AbstractHandler {
 		FileWriter outputfile = new FileWriter(outputFile);
 		writer = new CSVWriter(outputfile);
 		// header
-		String[] absInfo = new String[] {"Test Type(unit test, somke test, intergration test, other)", "Contains Assertion", "Comment/Javadoc is meanningful", "Naming Convention is meanningful", "Test target related to dynamic binding", "Contains mock"};
-		String[] blankLine = new String[] {""};
+//		String[] absInfo = new String[] {"Test Type(unit test, somke test, intergration test, other)", "Contains Assertion", "Comment/Javadoc is meanningful", "Naming Convention is meanningful", "Test target related to dynamic binding", "Contains mock"};
+//		String[] blankLine = new String[] {""};
 		String[] header = new String[] {"testPackage", "testClassName", "testMethodName", "potentialTargetQualifiedName", "AAA(0,1,2)", "isTarget", "isMock", "Assert Distance", "Level", "Name Similarity"};
 		// write
-		writer.writeNext(absInfo);
-		writer.writeNext(blankLine);
-		writer.writeNext(blankLine);
+//		writer.writeNext(absInfo);
+//		writer.writeNext(blankLine);
+//		writer.writeNext(blankLine);
 		writer.writeNext(header);
 		// result
 		List<String[]> result = generateOutput(className, methodName, cu.getPackage().getName().toString(), visited);
@@ -180,11 +180,6 @@ public class SampleHandler extends AbstractHandler {
 						visited.add(getSpace(level) + "MOCK " + binding.getDeclaringClass().getQualifiedName() + "." + mi.getName().toString() + getParameters(binding));
 						continue;
 					}
-
-					if (isMockito(mi)) {
-						visited.add(getSpace(level) + "MOCK " + binding.getDeclaringClass().getQualifiedName() + "." + mi.getName().toString() + getParameters(binding));
-						continue;
-					}
 					
 					ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
 					
@@ -216,7 +211,7 @@ public class SampleHandler extends AbstractHandler {
 
 				} catch (Exception ex) {
 					// TODO: handle exception
-					ex.printStackTrace();
+//					ex.printStackTrace();
 				}
 				
 				
@@ -272,14 +267,6 @@ public class SampleHandler extends AbstractHandler {
 
 	private static boolean isEasyMock(MethodInvocation mi) {
 		if (mi.resolveMethodBinding().getDeclaringClass().getQualifiedName().startsWith("org.easymock")) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	private static boolean isMockito(MethodInvocation mi) {
-		if (mi.resolveMethodBinding().getDeclaringClass().getQualifiedName().startsWith("org.mockito")) {
 			return true;
 		}
 		
